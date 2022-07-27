@@ -1,7 +1,10 @@
 import sys,re,string,glob
+sys.path.append("/root/.local/bin")
+from nltk.tokenize import sent_tokenize
 from uidodorm import dorm,uido,getDORM,infovec
 
-textlist = glob.glob("../rawtexts/*.clean.txt")
+#textlist = glob.glob("../rawtexts/*.clean.txt")
+textlist = glob.glob("../rawtexts/1968.christie.bythepricking.clean.txt")
 
 sys.stdout.write("Year,Author,Age,Text,Dorm,DormUido,SentenceNumber\n")
 
@@ -12,7 +15,7 @@ for text in textlist:
     namex = re.compile("(.*/)(.*)\.(.*)\.(.*)\.clean\.txt")
     textname = namex.search(text)
 
-    date = textname.group(2)
+    date = int(textname.group(2))
     author = textname.group(3)
     id = textname.group(4)
     if author == "christie":
@@ -22,11 +25,11 @@ for text in textlist:
     else:
         age = "NA"
 
-    sentences = intext.split("[\.\?\!\n;]")
+    sentences = sent_tokenize(intext)
 
     ii = 1
     for s in sentences:
-        dorm = getDORM(s,lenCorrect=True)
-        dormuido = dorm - uido(s)
-        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,text,dorm,dormuido,ii))
+        Dorm = getDORM(s,lenCorrect=True)
+        dormUido = Dorm - dorm(uido(s))
+        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,text,Dorm,dormUido,ii))
         ii=ii+1
