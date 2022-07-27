@@ -3,8 +3,8 @@ sys.path.append("/root/.local/bin")
 from nltk.tokenize import sent_tokenize
 from uidodorm import dorm,uido,getDORM,infovec
 
-#textlist = glob.glob("../rawtexts/*.clean.txt")
-textlist = glob.glob("../rawtexts/1968.christie.bythepricking.clean.txt")
+textlist = glob.glob("../rawtexts/*.clean.txt")
+#textlist = glob.glob("../rawtexts/1968.christie.bythepricking.clean.txt")
 
 sys.stdout.write("Year,Author,Age,Text,Dorm,DormUido,SentenceNumber\n")
 
@@ -31,5 +31,5 @@ for text in textlist:
     for s in sentences:
         Dorm = getDORM(s,lenCorrect=True)
         dormUido = Dorm - dorm(uido(s))
-        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,text,Dorm,dormUido,ii))
+        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,id,Dorm,dormUido,ii))
         ii=ii+1

@@ -149,7 +149,7 @@ def uido(senString, lenCorrect = False):
       swaplist = hyplist
       prevsd = currentsd
       ll = 0
-      print("we improved") #debug
+      #print("we improved") #debug
     
     else:
       ll = ll+1
