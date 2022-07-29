@@ -10,7 +10,7 @@ textlist = glob.glob("../rawtexts/*.clean.txt")
 #The list is reversed to debug last files
 textlist.reverse()
 
-sys.stdout.write("Year,Author,Age,Text,DormNoPenalty,Dorm,Uido,DormUido,SentenceNumber\n")
+sys.stdout.write("Year,Author,Age,Text,DormNoPenalty,DormWPenalty,Uido,DormUido,SentenceNumber\n")
 
 for text in textlist:
     sys.stderr.write("We're on %s\n\n" % text)
