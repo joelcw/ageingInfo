@@ -69,7 +69,12 @@ def dorm(logvec, correct=False):
 
       numberUniquePerms = math.factorial(len(logvec))/denominator
     
-      penalty=(1/numberUniquePerms)
+      penaltyProb=(1/numberUniquePerms)
+      #This penalty is too small, and it is a probability, which is not the same units as dorm. So we can log it, which converts to bits, and then take the inverse, making sure there's a larger penalty for higher probabilities of a chance uido.
+      #Except penaltyProb can't be 1, or else the log is undefined, so we arbitrarily set it to 0.95 in that case.
+      if penaltyProb == 1:
+        penaltyProb = 0.95
+      penalty=(1/np.log2(penaltyProb))
       #print(penalty)
       dorm+=penalty
   return(dorm)
