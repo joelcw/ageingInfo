@@ -74,7 +74,7 @@ def dorm(logvec, correct=False):
       #Except penaltyProb can't be 1, or else the log is undefined, so we arbitrarily set it to 0.95 in that case.
       if penaltyProb == 1:
         penaltyProb = 0.95
-      penalty=(1/np.log2(penaltyProb))
+      penalty=(1/-np.log2(penaltyProb))
       #print(penalty)
       dorm+=penalty
   return(dorm)
