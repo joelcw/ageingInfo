@@ -3,6 +3,7 @@
 #there is a better library for this - pycontractions, but install is failing for dependency reasons
 #we can probably make it work in a final version - it does some context detection to distinguish e.g., he's (he is) tired from he's (he has) gone home
 from wordfreq import word_frequency
+from nltk.tokenize import word_tokenize
 from itertools import permutations
 import pandas as pd
 import numpy as np
@@ -18,8 +19,10 @@ def infovec(senString):
   #first, clean the string: expand contractions, strip punctuation and capitalisation
   s=contractions.fix(senString)
   s=s.translate(str.maketrans('', '', string.punctuation)).lower()
-  #split into an array
-  s=s.split() #JCW: this used to be 'split(" ")', but I'm pretty sure it should split on all whitespace and we were losing words before...12May2020
+  #split into an array; changed to nltk tokenizer 1Aug2022
+  s = word_tokenize(s)
+  numberOfWords = len(s)
+  #s=s.split() #JCW: this used to be 'split(" ")', but I'm pretty sure it should split on all whitespace and we were losing words before...12May2020
   
   #PART II: the information content vector
   orderedIC=[]
@@ -29,7 +32,7 @@ def infovec(senString):
     orderedIC.append(1/f)
   logvec=np.log2(orderedIC)
   
-  return(logvec)
+  return(logvec,numberOfWords)
 
 
 
@@ -83,12 +86,12 @@ def dorm(logvec, correct=False):
 
 def getDORM(senString,lenCorrect=False):
   #PARTs I and II: cleaning and logging
-  logvec = infovec(senString)
+  logvec,numberOfWords = infovec(senString) #Note: infovec now also returns sent length
   
   #PART III: The DORM
   thisDorm = dorm(logvec, correct=lenCorrect)
   
-  return thisDorm
+  return thisDorm,numberOfWords
   
   
 def uido(senString, lenCorrect = False):

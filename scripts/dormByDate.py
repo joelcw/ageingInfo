@@ -10,7 +10,7 @@ textlist = glob.glob("../rawtexts/*.clean.txt")
 #The list is reversed to debug last files
 textlist.reverse()
 
-sys.stdout.write("Year,Author,Age,Text,DormNoPenalty,DormWPenalty,Uido,DormUido,SentenceNumber\n")
+sys.stdout.write("Year,Author,Age,Text,DormNoPenalty,DormWPenalty,Uido,DormUido,SentenceNumber,NumWords\n")
 
 for text in textlist:
     sys.stderr.write("We're on %s\n\n" % text)
@@ -38,9 +38,10 @@ for text in textlist:
     ii = 1
     for s in sentences:
         sys.stderr.write("%s\n\n" % s) #debug
-        Dorm = getDORM(s,lenCorrect=True)
-        DormNoPenalty = getDORM(s,lenCorrect=False)
+        #unpack the tuple created by getDORM into its elements, ie the DORM and the number of words in the sentence
+        Dorm,numWords = getDORM(s,lenCorrect=True)
+        DormNoPenalty,numWords = getDORM(s,lenCorrect=False)
         Uido = dorm(uido(s))
         dormUido = Dorm - Uido
-        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,id,DormNoPenalty,Dorm,Uido,dormUido,ii))
+        sys.stdout.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,id,DormNoPenalty,Dorm,Uido,dormUido,ii,numWords))
         ii=ii+1
