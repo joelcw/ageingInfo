@@ -7,10 +7,11 @@ from uidodorm import dorm,uido,getDORM,infovec
 textlist = glob.glob("../rawtexts/*.clean.txt")
 #textlist = glob.glob("../rawtexts/1921.christie.styles.clean.txt")
 
-#The list is reversed to debug last files
-textlist.reverse()
-
 sys.stdout.write("Year,Author,Age,Text,DormNoPenalty,DormWPenalty,Uido,DormUido,SentenceNumber,NumWords\n")
+
+debugFile = open("debugFile.csv","w")
+
+debugFile.write("Year,Author,Age,Text,DormNoPenalty,DormWPenalty,Uido,DormUido,SentenceNumber,NumWords\n")
 
 for text in textlist:
     sys.stderr.write("We're on %s\n\n" % text)
@@ -31,6 +32,9 @@ for text in textlist:
 
     #Fix bad quotes that cause tokenization probs
     intext = re.sub("[“”]","\"",intext)
+    intext = re.sub("[‘’]","\'",intext)
+    intext = intext.replace("—","--")
+    intext = intext.replace("_"," ")
 
     #tokenize into sentences
     sentences = sent_tokenize(intext)
@@ -44,4 +48,5 @@ for text in textlist:
         Uido = dorm(uido(s))
         dormUido = Dorm - Uido
         sys.stdout.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (date,author,age,id,DormNoPenalty,Dorm,Uido,dormUido,ii,numWords))
+        debugFile.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n%s\n\n" % (date,author,age,id,DormNoPenalty,Dorm,Uido,dormUido,ii,numWords,s))
         ii=ii+1

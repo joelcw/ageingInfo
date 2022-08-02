@@ -7,7 +7,7 @@ from nltk.tokenize import word_tokenize
 from itertools import permutations
 import pandas as pd
 import numpy as np
-import string
+import string,re
 import contractions
 import collections, math
 
@@ -17,19 +17,29 @@ import collections, math
 def infovec(senString):
   #PART I: cleaning
   #first, clean the string: expand contractions, strip punctuation and capitalisation
-  s=contractions.fix(senString)
-  s=s.translate(str.maketrans('', '', string.punctuation)).lower()
+  #Fix bad quotes that cause tokenization probs
+  s = re.sub("[“”]","\"",senString)
+  s = re.sub("[‘’]","\'",s)
+  s = s.replace("—","--")
+  #s=contractions.fix(senString) #2022: trying with contractions, since they have different freqs and the word_tokenizer can deal with them. Note that it can also deal with trailing punctuation on words, though it uses intraword punctuation
+
+  #2022: this was removing important information for the tokenizer, so instead, we let the tokenizer use punctuation, but then remove punctuation-only tokens later because word_frequency doesn't process them, though it does process intraword punctuation.
+  #s=s.translate(str.maketrans('', '', string.punctuation)).lower()
+
   #split into an array; changed to nltk tokenizer 1Aug2022
-  s = word_tokenize(s)
-  numberOfWords = len(s)
   #s=s.split() #JCW: this used to be 'split(" ")', but I'm pretty sure it should split on all whitespace and we were losing words before...12May2020
+  s = word_tokenize(s)
   
   #PART II: the information content vector
   orderedIC=[]
   for w in s:
     #the minimum here is veeery low (could proabbly be higher) and is mainly to prevent zero division errors
-    f=word_frequency(w,'en', minimum=0.000000000000000001)
-    orderedIC.append(1/f)
+    #prevents punctuation-only tokens from ending up in the final list
+    if re.match("^[%s(--)]$" % string.punctuation,w) == None:
+      f=word_frequency(w,'en', minimum=0.000000000000000001)
+      orderedIC.append(1/f)
+
+  numberOfWords = len(orderedIC)
   logvec=np.log2(orderedIC)
   
   return(logvec,numberOfWords)
@@ -96,7 +106,7 @@ def getDORM(senString,lenCorrect=False):
   
 def uido(senString, lenCorrect = False):
   
-  logvec = infovec(senString)
+  logvec = infovec(senString)[0]
   
   #midpoint = (len(logvec)-1)/2
   #print(midpoint)#debug
