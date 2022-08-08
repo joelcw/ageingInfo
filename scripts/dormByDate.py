@@ -34,6 +34,7 @@ for text in textlist:
     intext = re.sub("[“”]","\"",intext)
     intext = re.sub("[‘’]","\'",intext)
     intext = intext.replace("—","--")
+    intext = intext.replace("–","-")
     intext = intext.replace("_"," ")
 
     #tokenize into sentences
