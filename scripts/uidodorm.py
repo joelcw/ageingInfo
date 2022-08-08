@@ -21,6 +21,7 @@ def infovec(senString):
   s = re.sub("[“”]","\"",senString)
   s = re.sub("[‘’]","\'",s)
   s = s.replace("—","--")
+  s = s.replace("–","-")
   #s=contractions.fix(senString) #2022: trying with contractions, since they have different freqs and the word_tokenizer can deal with them. Note that it can also deal with trailing punctuation on words, though it uses intraword punctuation
 
   #2022: this was removing important information for the tokenizer, so instead, we let the tokenizer use punctuation, but then remove punctuation-only tokens later because word_frequency doesn't process them, though it does process intraword punctuation.
@@ -35,7 +36,7 @@ def infovec(senString):
   for w in s:
     #the minimum here is veeery low (could proabbly be higher) and is mainly to prevent zero division errors
     #prevents punctuation-only tokens from ending up in the final list
-    if re.match("^[%s(--)]$" % string.punctuation,w) == None:
+    if re.match("^[%s]+$" % string.punctuation,w) == None:
       f=word_frequency(w,'en', minimum=0.000000000000000001)
       orderedIC.append(1/f)
 
