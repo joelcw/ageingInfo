@@ -42,8 +42,9 @@ def infovec(senString):
 
   numberOfWords = len(orderedIC)
   logvec=np.log2(orderedIC)
+  meanInfo = np.mean(logvec)
   
-  return(logvec,numberOfWords)
+  return(logvec,numberOfWords,meanInfo)
 
 
 
@@ -97,12 +98,12 @@ def dorm(logvec, correct=False):
 
 def getDORM(senString,lenCorrect=False):
   #PARTs I and II: cleaning and logging
-  logvec,numberOfWords = infovec(senString) #Note: infovec now also returns sent length
+  logvec,numberOfWords,meanInfo = infovec(senString) #Note: infovec now also returns sent length
   
   #PART III: The DORM
   thisDorm = dorm(logvec, correct=lenCorrect)
   
-  return thisDorm,numberOfWords
+  return thisDorm,numberOfWords,meanInfo
   
   
 def uido(senString, lenCorrect = False):
